@@ -15,6 +15,7 @@ pandas = "*"
 scipy = "*"
 seaborn = "*"
 tk = "*"
+networkx = "*"
 
 [requires]
 python_version = "3.6"
