@@ -16,6 +16,7 @@ scipy = "*"
 seaborn = "*"
 tk = "*"
 networkx = "*"
+bleach = "*"
 
 [requires]
 python_version = "3.6"
