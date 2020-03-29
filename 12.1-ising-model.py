@@ -2,7 +2,7 @@ import random
 import copy
 
 import matplotlib
-matplotlib.use('agg')
+matplotlib.use('TkAgg')
 from pylab import *
 import numpy as np
 
@@ -27,31 +27,34 @@ def calc_avg_magn(config):
     return avg_magn
 
 def initialize():
-    global config, temperatures
+    global config, avg_magns
     config = zeros([n, n])
     for x in range(n):
         for y in range(n):
-            config[x, y] = 1 if random.random() < p else -1
+            config[x, y] = 1 if random() < p else -1
 
     avg_magns.append(calc_avg_magn(config))
     
 
 def observe():
     global config
-    temperatures.append(get_temp(config))
+    avg_magns.append(calc_avg_magn(config))
 
     cla()
     subplot(1,2,1)
     imshow(config, vmin = 0, vmax = 1, cmap = cm.binary)
 
     subplot(1,2,2)
+    plt.ylim((-1, 1))
+    plt.title('average magnetization')
+    plt.xlabel('step')
     plot(range(len(avg_magns)), avg_magns)
 
 def update():
     global config, t, step
 
-    x = random.randint(0, range(n) - 1)
-    y = random.randint(0, range(n) - 1)
+    x = randint(0, n - 1)
+    y = randint(0, n - 1)
 
     energy = 0
     for dx in [-1, 0, 1]:
@@ -61,7 +64,7 @@ def update():
                 energy += config[(x + dx) % n, (y + dy) % n]  
     energy *= -config[x, y]  # product with central cell
     
-    if random.random() < min(1, e**(2*energy / t)):
+    if random() < min(1, e**(2*energy / t)):
         config[x, y] = -config[x, y]
     avg_magns.append(calc_avg_magn(config))
 
