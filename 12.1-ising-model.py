@@ -74,3 +74,4 @@ pycxsimulator.GUI(parameterSetters=[temp_setter]).start(func=[initialize, observ
 
 # notes
 # energy fluctuates with higher amplitude as temperature is increased
+# average magnetization drops with higher temperature
