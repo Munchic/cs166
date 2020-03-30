@@ -66,7 +66,11 @@ def update():
     
     if random() < min(1, e**(2*energy / t)):
         config[x, y] = -config[x, y]
+
     avg_magns.append(calc_avg_magn(config))
 
 import pycxsimulator
 pycxsimulator.GUI(parameterSetters=[temp_setter]).start(func=[initialize, observe, update])
+
+# notes
+# energy fluctuates with higher amplitude as temperature is increased
