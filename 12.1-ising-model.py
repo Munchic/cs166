@@ -7,7 +7,7 @@ from pylab import *
 import numpy as np
 
 
-n = 10  # size of space: n x n
+n = 100  # size of space: n x n
 p = 0.5  # probability of positive
 t = 1  # unitless temperature 
 avg_magns = []  # list to store average magnetization over time steps
