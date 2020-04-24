@@ -4,9 +4,10 @@
 
 Source code: https://github.com/Munchic/cs166/blob/master/gvhd-gvl-simulation.ipynb
 
+- Graph of components
+
 - Parameter quantification
 - Ratio of T cell to cancer cells
-- Rewrite the part about ATP and stuff
 
 ## I. Background
 
@@ -72,6 +73,14 @@ In this simulation, there are various dynamics being modelled:
 
 There are several assumptions that distinguish this simplified immune system from the complex human immune system:
 
+**Network representation assumptions:**
+
+- **Similar cell size and mobility**: this simulation will assume that all cells will more or less interact with the Moore neighborhood in 3D (26 surrounding cells) with rewiring probability in a Watts-Strogatz network of 0.1(to indicate some mobility);
+- **Asynchronous edge-based update**: this simulation will assume that all cells will more or less interact with the Moore neighborhood in 3D (26 surrounding cells) with rewiring probability in a Watts-Strogatz network of 0.1(to indicate some mobility);
+- **Constancy in network size**: this simulation will assume that the total number of cells with be the same throughout the simulation, and dead cells will be replenished by either type of cells (most likely AML if the cap is not reached yet);
+
+**Immune system assumptions**
+
 - **Enclosed system**: only initialized (after chemotherapy and transplantation) immune and host cells can participate (destroy or multiply) in this system; there is no outflux or influx of cells;
 - **Immune system abstraction**: because CD8+ T cells play the most important role in GvHD and GvL, we will represent as if they are the only component of the immune system and count other cells as “normal cells” without a particular functionality;
 - **Linear genetic overlap**: MHC compatibility is qualified with a large number of genetic markers, each carrying a different contribution towards GvHD/GvL; to simplify, we will use percentages (e.g., $100\%$ = twin, $50\%$ = sibling or parent, $<0.01\%$ = completely unrelated donor);
@@ -80,6 +89,7 @@ There are several assumptions that distinguish this simplified immune system fro
 - **Self-replication only in multipotent stem cells**: this simulation will allow for indefinite self-replication of multipotent hematopoietic stem cells (like in real life) but no replication for myeloid progenitor cells (in real life, they have a limited number of replication cycles);
 - **Homogeneity in a cell type population**: this simulation will assume that all cells of the same type will have the same quantitative abilities (e.g., need for oxygen/chance of destroying another cell). In reality, CD8+ T cells will have different T cell receptors (TCR) that determine their potency and affinity towards different kinds of antigens;
 - **Constancy of HSCs in production and existence**: this simulation will assume that transplanted HSCs are just there (in the background) and don’t interact with any cell, they will just summon new donor CD8+ T cells and donor myeloid cells; in reality, HSCs divide indefinitely and some of them mature into specialized cells;
+- **Transplant consists of equal amount of T cells and myeloid cells**
 
 #### 2. Cellular agents
 
@@ -93,8 +103,6 @@ There are several assumptions that distinguish this simplified immune system fro
 #### 3. Interactions
 
 The interaction will be between two cells at a time and asynchronously updated — this will resemble the random (not really coordinated) interactions that happen within the blood stream. The type of interaction and outcomes will differ depending on what type of agents interact. Apart from interaction of cellular agents, there are global resources (Fig. 3) that the cells compete for to proliferate. 
-
-ASSUME THAT DONOR MYELOID WILL TRANSFORM INTO HEALTHY ONEs
 
 <img src="/Users/Munchic/Desktop/CS166/FP Fig 3.1.png" alt="Screen Shot 2020-04-20 at 17.55.34" style="zoom:50%;" />
 
@@ -115,17 +123,17 @@ Let us describe in detail the types of interaction for agents of this system:
 Genetic overlap of AML cells with donor T cells and healthy cells with donor T cells will be available to set as parameters to the model.
 
 1. **Fixed conditioning variables for a baseline simulation**
-   1. **Post-chemo AML cells count** ($N_{AML} \in \mathbb{N}$ or `cell_aml_count`):
-   2. **Normal non-blood cells count** ($N_{norm} \in \mathbb{N}$ or `cell_norm_count`):
-   3. **Relapse chance** ($p_{relapse} \in [0, 1]$ or `p_relapse`): chance of re-appearance of cancer myeloid cells even after the whole cancer population has been wiped out
-   4. **Maximal myeloid capacity** ($N_{myeloid\_cap}$ or `cap_myeloid`): myeloid cells are produced from the hematopoietic stem cells located in the bone marrow; due to limit of resources (e.g., glucose), higher growth of myeloid leukemia cells will impede normal myeloid cell maturation;
-   5. WQHDUIWQDJHIUWDQ **T cell to cancer myeloid cell ratio** ($k_{transplant}=\dfrac{N_{Tcell}}{N_{AML}}$ or `ratio_t_myeloid`): ratio of counts of T cell in a **non-depleted** transplant to the number of myeloid leukemia cells present in the host after chemotherapy;
-   6. **Host cell death threshold** ($\mu_{cell\_death} < 1- \dfrac{N_{AML}}{N_{myeloid\_cap}}\in [0, 1] $ or `thres_cell_death`): threshold of percentage of heatlhy myeloid cells as a total of myeloid capacity, below which the innate immune system and oxygen will be compromised, leading to cell death;
-   7. **Cell death chance** ($p_{cell\_death}$ or `p_cell_death`): probability of cell death in an asynchronous update when the host has reached the cell death threshold
+   1. **Normal non-blood cells count** ($N_{norm} \in \mathbb{N}$ or `cap_cell_count`): specifies how many normal cells exist in the beginning (and the maximum capacity);
+   2. **Post-chemo AML cells count** ($N_{AML} \in \mathbb{N}$ or `cell_aml_count`): specifies how many AML cells exist in the beginning;
+   3. **Maximal myeloid capacity** ($N_{myeloid\_cap}$ or `cap_myeloid`): myeloid cells are produced from the hematopoietic stem cells located in the bone marrow; due to limit of resources (e.g., glucose), higher growth of myeloid leukemia cells will impede normal myeloid cell maturation;
+   4. **Relative potency of AML cells** ($p_{rel\_potency} \in \mathbb{R}$ or `rel_aml_potency`): given unregulated growth and that the myeloid capacity is not reached, how more likely the next myeloid cell will be an AML rather than a healthy donor myeloid
+   5. **Host cell death threshold** ($\mu_{cell\_death} < 1- \dfrac{N_{AML}}{N_{myeloid\_cap}}\in [0, 1] $ or `thres_cell_death`): threshold of percentage of heatlhy myeloid cells as a total of myeloid capacity, below which the innate immune system and oxygen will be compromised, leading to cell death;
+   6. **Cell death chance** ($p_{cell\_death}$ or `p_cell_death`): probability of cell death in an asynchronous update when the host has reached the cell death threshold
+   7. **T cell to cancer myeloid cell ratio** ($k_{transplant}=\dfrac{N_{Tcell}}{N_{AML}}$ or `ratio_t_myeloid`): ratio of counts of T cell in a **non-depleted** transplant to the number of myeloid cells present in the transplant;
 
 2. **Independent “toggle” variables**
-   1. **T cell depletion** ($N_{deplete} \in [0, 1]$ or `t_deplete_perc`):
-   2. **MHC compatibility** ($MHC_{overlap} \in [0, 1]$ or `mhc_overlap_perc`):
+   1. **MHC compatibility** ($MHC_{overlap} \in [0, 1]$ or `mhc_overlap_perc`):
+   2. **T cell depletion** ($N_{deplete} \in [0, 1]$ or `t_deplete_perc`):
 
 #### 5. Metrics
 
