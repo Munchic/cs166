@@ -1,0 +1,7 @@
+﻿ID,Type,Dimensionality,Param_1,Value_1,Param_2,Value_2
+1,circle,2,radius,3,,
+2,square,2,length,1,,
+3,cylinder,3,radius,1.5,length,4
+4,square,2,length,3,,
+5,cylinder,3,radius,7,length,1
+6,cube,3,length,5,,

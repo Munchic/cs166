@@ -4,12 +4,6 @@
 
 Source code: https://github.com/Munchic/cs166/blob/master/gvhd-gvl-simulation.ipynb
 
-- Depletion
-- Normal cells trigger less
-
-- Parameter quantification
-- Change diagram
-
 ## I. Background
 
 #### 1. About acute myeloid leukemia

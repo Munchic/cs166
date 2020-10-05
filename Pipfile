@@ -17,6 +17,7 @@ seaborn = "*"
 tk = "*"
 networkx = "*"
 bleach = "*"
+sympy = "*"
 
 [requires]
 python_version = "3.6.5"
