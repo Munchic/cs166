@@ -18,6 +18,7 @@ tk = "*"
 networkx = "*"
 bleach = "*"
 sympy = "*"
+cvxpy = "*"
 
 [requires]
 python_version = "3.6.5"
